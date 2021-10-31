@@ -113,8 +113,13 @@
 
     // clear filters
     document.querySelector('#clear-filters').addEventListener('click', () => {
-      setDefaultInputsValues()
-    })
+      setDefaultInputsValues();
+    });
+
+    // watch local storage for check if user has custom filters for show clear filter button
+    // show cle3ar filters button if user has custom filters
+    document.querySelector('#clear-filters').style.display =
+      localStorage.getItem('has-custom-filters') ? 'block' : 'none';
 
     document.querySelector('#form').addEventListener('submit', () => {
       document.querySelector('#get-crypto').setAttribute('aria-busy', true);
@@ -158,6 +163,7 @@
               <td>${formatter.format(item.quote.USD.volume_24h)}</td>
             `;
             table.appendChild(row);
+            document.querySelector('#clear-filters').style.display = 'block';
           });
         })
         .catch((error) => {
@@ -191,6 +197,7 @@
         'binance-smart-chain',
         document.querySelector('#binance-smart-chain').value
       );
+      localStorage.setItem('has-custom-filters', true);
     }
 
     function setDefaultInputsValues() {
@@ -205,6 +212,8 @@
       localStorage.removeItem('max-supply');
       localStorage.removeItem('date-added');
       localStorage.removeItem('binance-smart-chain');
+      localStorage.removeItem('has-custom-filters');
+      document.querySelector('#clear-filters').style.display = 'none';
     }
   </script>
 </html>
