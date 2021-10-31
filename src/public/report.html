@@ -20,21 +20,11 @@
             <div class="row">
               <div class="col-xs-12 col-md-4">
                 <label for="min-price">Min price</label>
-                <input
-                  type="number"
-                  id="min-price"
-                  step="any"
-                  required
-                />
+                <input type="number" id="min-price" step="any" required />
               </div>
               <div class="col-xs-12 col-md-4">
                 <label for="max-price">Max price</label>
-                <input
-                  type="number"
-                  id="max-price"
-                  step="any"
-                  required
-                />
+                <input type="number" id="max-price" step="any" required />
               </div>
               <div class="col-xs-12 col-md-4">
                 <label for="max-supply">Max supply</label>
@@ -76,6 +66,17 @@
             </div>
           </div>
         </form>
+        <button
+          id="clear-filters"
+          style="
+            width: 200px;
+            background-color: var(--del-color);
+            border-color: var(--del-color);
+          "
+        >
+          🗙 Clear filters
+        </button>
+
         <div>
           <h3>Total found: <span id="total-found"></span></h3>
           <table>
@@ -101,11 +102,19 @@
       currency: 'USD',
     });
 
-    document.querySelector('#min-price').value = localStorage.getItem('min-price') || 0.000001;
-    document.querySelector('#max-price').value = localStorage.getItem('max-price') || 0.01;
-    document.querySelector('#max-supply').value = localStorage.getItem('max-supply') || 1000000000;
-    document.querySelector('#date-added').value = localStorage.getItem('date-added') || '2021-01-01';
+    document.querySelector('#min-price').value =
+      localStorage.getItem('min-price') || 0.000001;
+    document.querySelector('#max-price').value =
+      localStorage.getItem('max-price') || 0.01;
+    document.querySelector('#max-supply').value =
+      localStorage.getItem('max-supply') || 1000000000;
+    document.querySelector('#date-added').value =
+      localStorage.getItem('date-added') || '2021-01-01';
 
+    // clear filters
+    document.querySelector('#clear-filters').addEventListener('click', () => {
+      setDefaultInputsValues()
+    })
 
     document.querySelector('#form').addEventListener('submit', () => {
       document.querySelector('#get-crypto').setAttribute('aria-busy', true);
@@ -161,12 +170,41 @@
         });
     });
 
-    function saveInputValuesOnLocalStorage(){      
-      localStorage.setItem('min-price', document.querySelector('#min-price').value);
-      localStorage.setItem('max-price', document.querySelector('#max-price').value);
-      localStorage.setItem('max-supply', document.querySelector('#max-supply').value);
-      localStorage.setItem('date-added', document.querySelector('#date-added').value);
-      localStorage.setItem('binance-smart-chain', document.querySelector('#binance-smart-chain').value);
+    function saveInputValuesOnLocalStorage() {
+      localStorage.setItem(
+        'min-price',
+        document.querySelector('#min-price').value
+      );
+      localStorage.setItem(
+        'max-price',
+        document.querySelector('#max-price').value
+      );
+      localStorage.setItem(
+        'max-supply',
+        document.querySelector('#max-supply').value
+      );
+      localStorage.setItem(
+        'date-added',
+        document.querySelector('#date-added').value
+      );
+      localStorage.setItem(
+        'binance-smart-chain',
+        document.querySelector('#binance-smart-chain').value
+      );
+    }
+
+    function setDefaultInputsValues() {
+      document.querySelector('#min-price').value = 0.000001;
+      document.querySelector('#max-price').value = 0.01;
+      document.querySelector('#max-supply').value = 1000000000;
+      document.querySelector('#date-added').value = '2021-01-01';
+      document.querySelector('#binance-smart-chain').checked = true;
+      // Remove local storage values
+      localStorage.removeItem('min-price');
+      localStorage.removeItem('max-price');
+      localStorage.removeItem('max-supply');
+      localStorage.removeItem('date-added');
+      localStorage.removeItem('binance-smart-chain');
     }
   </script>
 </html>
