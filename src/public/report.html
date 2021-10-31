@@ -84,8 +84,8 @@
               <tr>
                 <th>#Rank</th>
                 <th>Name</th>
-                <th>Symbol</th>
                 <th>Price</th>
+                <th>Supply</th>
                 <th>Market Cap</th>
                 <th>Change (24h)</th>
               </tr>
@@ -156,9 +156,22 @@
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${item.cmc_rank}</td>
-              <td>${item.name}</td>
-              <td>${item.symbol}</td>
+              <td><a href="https://coinmarketcap.com/currencies/${
+                item.slug
+              }" target="_blank">${
+              item.name
+            } <span style="font-style:italic;">(${item.symbol})</span></a></td>
               <td>USD$ ${item.quote.USD.price}</td>
+              <td style="text-align:center;">${item.circulating_supply}/${item.total_supply} 
+                <div>
+                  <ins>
+                (${getSupplyPercent(
+                  item.circulating_supply,
+                  item.total_supply
+                )})
+                </ins>
+              </div>
+              </td>
               <td>${formatter.format(item.quote.USD.market_cap)}</td>
               <td>${formatter.format(item.quote.USD.volume_24h)}</td>
             `;
@@ -214,6 +227,11 @@
       localStorage.removeItem('binance-smart-chain');
       localStorage.removeItem('has-custom-filters');
       document.querySelector('#clear-filters').style.display = 'none';
+    }
+
+    function getSupplyPercent(supply, totalSupply) {
+      const percent = ((Number(supply) / Number(totalSupply)) * 100).toFixed(2);
+      return isNaN(percent) ? '' : percent + '%';
     }
   </script>
 </html>
