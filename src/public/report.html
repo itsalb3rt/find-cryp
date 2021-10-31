@@ -101,9 +101,11 @@
       currency: 'USD',
     });
 
-    document.querySelector('#min-price').value = 0.000001;
-    document.querySelector('#max-price').value = 0.01;
-    document.querySelector('#date-added').value = '2021-01-01';
+    document.querySelector('#min-price').value = localStorage.getItem('min-price') || 0.000001;
+    document.querySelector('#max-price').value = localStorage.getItem('max-price') || 0.01;
+    document.querySelector('#max-supply').value = localStorage.getItem('max-supply') || 1000000000;
+    document.querySelector('#date-added').value = localStorage.getItem('date-added') || '2021-01-01';
+
 
     document.querySelector('#form').addEventListener('submit', () => {
       document.querySelector('#get-crypto').setAttribute('aria-busy', true);
@@ -112,6 +114,8 @@
       const maxSupply = document.querySelector('#max-supply').value;
       const dateAdded = document.querySelector('#date-added').value;
       const network = document.querySelector('#binance-smart-chain').value;
+
+      saveInputValuesOnLocalStorage();
 
       fetch(
         `./api/crypto?minPrice=${minPrice}&maxPrice=${maxPrice}&maxSupply=${maxSupply}&dateAdded=${dateAdded}&network=${network}`,
@@ -156,5 +160,13 @@
             .setAttribute('aria-busy', false);
         });
     });
+
+    function saveInputValuesOnLocalStorage(){      
+      localStorage.setItem('min-price', document.querySelector('#min-price').value);
+      localStorage.setItem('max-price', document.querySelector('#max-price').value);
+      localStorage.setItem('max-supply', document.querySelector('#max-supply').value);
+      localStorage.setItem('date-added', document.querySelector('#date-added').value);
+      localStorage.setItem('binance-smart-chain', document.querySelector('#binance-smart-chain').value);
+    }
   </script>
 </html>
