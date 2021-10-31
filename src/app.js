@@ -41,6 +41,6 @@ app.get('/report', (req, res) => {
   res.sendFile(__dirname + '/public/report.html');
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(process.env.PORT || port, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
 })
