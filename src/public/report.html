@@ -160,9 +160,9 @@
                 item.slug
               }" target="_blank">${
               item.name
-            } <span style="font-style:italic;">(${item.symbol})</span></a></td>
-              <td>USD$ ${item.quote.USD.price}</td>
-              <td style="text-align:center;">${item.circulating_supply}/${item.total_supply} 
+            } <div style="font-style:italic;">(${item.symbol})</div></a></td>
+              <td nowrap>USD$ ${item.quote.USD.price.toFixed(7)}</td>
+              <td style="text-align:center;">${item.circulating_supply.toFixed(0)}/${item.total_supply.toFixed(0)} 
                 <div>
                   <ins>
                 (${getSupplyPercent(
