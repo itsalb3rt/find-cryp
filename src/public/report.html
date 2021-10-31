@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/flexboxgrid.css" />
+    <link rel="stylesheet" href="./css/pico.css" />
+    <title>Rich 🤑 in 2 years según W</title>
+  </head>
+  <body>
+    <header><h1>Crypto - Rich 🤑 in 2 years según W</h1></header>
+
+    <main>
+      <button id="get-crypto">Get report</button>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>#Rank</th>
+              <th>Name</th>
+              <th>Symbol</th>
+              <th>Price</th>
+              <th>Market Cap</th>
+              <th>Change (24h)</th>
+            </tr>
+          </thead>
+          <tbody id="crypto-table">
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+  <script>
+       var formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      });
+
+    document.querySelector('#get-crypto').addEventListener('click', () => {
+      fetch(`./api/crypto`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(async (response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw await response.json();
+          }
+        })
+        .then((data) => {
+          const table = document.querySelector('#crypto-table');
+          table.innerHTML = '';
+          data.forEach((item) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${item.cmc_rank}</td>
+              <td>${item.name}</td>
+              <td>${item.symbol}</td>
+              <td>USD$ ${item.quote.USD.price}</td>
+              <td>${formatter.format(item.quote.USD.market_cap)}</td>
+              <td>${formatter.format(item.quote.USD.volume_24h)}</td>
+            `;
+            table.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  </script>
+</html>
