@@ -25,6 +25,11 @@ app.get('/api/crypto', async (req, res) => {
       response.data.data = response.data.data.filter(coin => coin.tags.includes(networks))
     }
 
+    // filter response dateAdded
+    if (dateAdded) {
+      response.data.data = response.data.data.filter(coin => coin.date_added > dateAdded)
+    }
+
     res.json(response.data.data)
   } catch (error) {
     console.log(error);
