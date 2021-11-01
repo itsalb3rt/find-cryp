@@ -85,7 +85,7 @@
                 <th>#Rank</th>
                 <th>Name</th>
                 <th>Price</th>
-                <th style="text-align: center;">Supply</th>
+                <th style="text-align: center">Supply</th>
                 <th>Market Cap</th>
                 <th>Change (24h)</th>
               </tr>
@@ -97,10 +97,12 @@
     </div>
   </body>
   <script>
-    var formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
+
+    var formatter = (style = 'currency') =>
+      new Intl.NumberFormat('en-US', {
+        style: style,
+        currency: 'USD',
+      });
 
     document.querySelector('#min-price').value =
       localStorage.getItem('min-price') || 0.000001;
@@ -160,9 +162,13 @@
                 item.slug
               }" target="_blank">${
               item.name
-            } <div style="font-style:italic;color:grey">(${item.symbol})</div></a></td>
+            } <div style="font-style:italic;color:grey">(${
+              item.symbol
+            })</div></a></td>
               <td nowrap>USD$ ${item.quote.USD.price.toFixed(7)}</td>
-              <td style="text-align:center;">${item.circulating_supply.toFixed(0)}/${item.total_supply.toFixed(0)} 
+              <td style="text-align:center;">${formatter('decimal').format(
+                item.circulating_supply.toFixed(0)
+              )}/${formatter('decimal').format(item.total_supply.toFixed(0))} 
                 <div>
                   <ins>
                 (${getSupplyPercent(
@@ -172,8 +178,8 @@
                 </ins>
               </div>
               </td>
-              <td>${formatter.format(item.quote.USD.market_cap)}</td>
-              <td>${formatter.format(item.quote.USD.volume_24h)}</td>
+              <td>${formatter().format(item.quote.USD.market_cap)}</td>
+              <td>${formatter().format(item.quote.USD.volume_24h)}</td>
             `;
             table.appendChild(row);
             document.querySelector('#clear-filters').style.display = 'block';
