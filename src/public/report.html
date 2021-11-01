@@ -155,7 +155,8 @@
     document.querySelector('#clear-filters').style.display =
       localStorage.getItem('has-custom-filters') ? 'block' : 'none';
 
-    document.querySelector('#form').addEventListener('submit', () => {
+    document.querySelector('#form').addEventListener('submit', (event) => {
+      event.preventDefault();
       document.querySelector('#get-crypto').setAttribute('aria-busy', true);
       const minPrice = document.querySelector('#min-price').value;
       const maxPrice = document.querySelector('#max-price').value;
