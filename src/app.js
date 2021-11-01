@@ -1,6 +1,8 @@
 const express = require('express')
 const axios = require('axios')
 
+require('dotenv').config()
+
 const app = express()
 const port = 3000
 
@@ -17,7 +19,7 @@ app.get('/api/crypto', async (req, res) => {
   let qs = `?start=1&limit=5000&convert=USD&price_min=${minPrice}&price_max=${maxPrice}&circulating_supply_max=${maxSupply}`
   try {
     let response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest' + qs, {
-      headers: { 'X-CMC_PRO_API_KEY': 'cf28e7cb-0f3d-428a-98b1-5921820d8c50' }
+        headers: { 'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY }
     });
 
     if (networks) {
