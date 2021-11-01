@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/flexboxgrid.css" />
     <link rel="stylesheet" href="./css/pico.css" />
+    <link rel="stylesheet" href="./css/custom.css" />
     <title>Rich 🤑 in 2 years según W</title>
     <style>
       th {
@@ -187,32 +188,33 @@
           document.querySelector('#total-found').innerText = data.length;
 
           table.innerHTML = '';
-          data.forEach((item) => {
+          data.forEach((coin) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td>${item.cmc_rank}</td>
-              <td><a href="https://coinmarketcap.com/currencies/${
-                item.slug
-              }" target="_blank">${
-              item.name
-            } <div style="font-style:italic;color:grey">(${
-              item.symbol
-            })</div></a></td>
-              <td nowrap>USD$ ${item.quote.USD.price.toFixed(7)}</td>
+              <td>${coin.rank}</td>
+              <td nowrap>
+                <img 
+                  class="coin-logo"
+                  src="https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png"
+                  alt="${coin.name}"                
+                  loading="lazy">
+                <a href="https://coinmarketcap.com/currencies/${
+                  coin.id
+                }" target="_blank">${coin.name} ${coin.symbol}
+              </a>
+            </td>
+              <td nowrap>USD$ ${coin.priceUsd.toFixed(7)}</td>
               <td style="text-align:center;">${formatter('decimal').format(
-                item.circulating_supply.toFixed(0)
-              )}/${formatter('decimal').format(item.total_supply.toFixed(0))} 
+                coin.supply.toFixed(0)
+              )}/${formatter('decimal').format(coin.maxSupply.toFixed(0))} 
                 <div>
                   <ins>
-                (${getSupplyPercent(
-                  item.circulating_supply,
-                  item.total_supply
-                )})
+                (${getSupplyPercent(coin.supply, coin.maxSupply)})
                 </ins>
               </div>
               </td>
-              <td>${formatter().format(item.quote.USD.market_cap)}</td>
-              <td>${formatter().format(item.quote.USD.volume_24h)}</td>
+              <td>${formatter().format(coin.marketCapUsd)}</td>
+              <td>${formatter().format(coin.volumeUsd24Hr)}</td>
             `;
             table.appendChild(row);
             document.querySelector('#clear-filters').style.display = 'block';
@@ -270,7 +272,7 @@
 
     function getSupplyPercent(supply, totalSupply) {
       const percent = ((Number(supply) / Number(totalSupply)) * 100).toFixed(2);
-      return isNaN(percent) ? '' : percent + '%';
+      return isNaN(percent) ? '' : percent + ' %';
     }
   </script>
 </html>
