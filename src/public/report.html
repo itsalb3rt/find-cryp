@@ -98,11 +98,24 @@
             </thead>
             <tbody id="crypto-table"></tbody>
           </table>
+          <div>
+            <button style="margin: auto; display: none" id="show-more">
+              Load more...
+            </button>
+          </div>
         </div>
       </main>
     </div>
   </body>
   <script>
+    const data = {
+      pagination: {
+        offset: 0,
+        limit: 10,
+        total: 0,
+      },
+    };
+
     const getCellValue = (tr, idx) =>
       tr.children[idx].innerText || tr.children[idx].textContent;
 
@@ -156,19 +169,48 @@
     document.querySelector('#clear-filters').style.display =
       localStorage.getItem('has-custom-filters') ? 'block' : 'none';
 
-    document.querySelector('#form').addEventListener('submit', (event) => {
-      event.preventDefault();
-      document.querySelector('#get-crypto').setAttribute('aria-busy', true);
+    document
+      .querySelector('#form')
+      .addEventListener('submit', async (event) => {
+        event.preventDefault();
+        toggleShowMoreLoading(true);
+        document.querySelector('#get-crypto').setAttribute('aria-busy', true);
+
+        await fetchCoins({ usePagination: false });
+
+        saveInputValuesOnLocalStorage();
+        document.querySelector('#get-crypto').setAttribute('aria-busy', false);
+        toggleShowMoreLoading(false);
+        document.querySelector('#clear-filters').style.display = 'block';
+      });
+
+    document.querySelector('#show-more').addEventListener('click', async () => {
+      toggleShowMoreLoading(true);
+      await fetchCoins({ usePagination: true });
+      toggleShowMoreLoading(false);
+    });
+
+    function fetchCoins({ usePagination }) {
       const minPrice = document.querySelector('#min-price').value;
       const maxPrice = document.querySelector('#max-price').value;
       const maxSupply = document.querySelector('#max-supply').value;
       const dateAdded = document.querySelector('#date-added').value;
       const network = document.querySelector('#binance-smart-chain').value;
 
-      saveInputValuesOnLocalStorage();
+      if (usePagination === false) {
+        data.pagination.offset = 0;
+        data.pagination.limit = 10;
+        data.pagination.total = 0;
+      }
 
-      fetch(
-        `./api/crypto?minPrice=${minPrice}&maxPrice=${maxPrice}&maxSupply=${maxSupply}&dateAdded=${dateAdded}&network=${network}`,
+      return fetch(
+        `./api/crypto?minPrice=${minPrice}
+        &maxPrice=${maxPrice}
+        &maxSupply=${maxSupply}
+        &dateAdded=${dateAdded}
+        &network=${network}
+        &limit=${data.pagination.limit}
+        &offset=${data.pagination.offset}`,
         {
           method: 'GET',
           headers: {
@@ -183,52 +225,58 @@
             throw await response.json();
           }
         })
-        .then((data) => {
-          const table = document.querySelector('#crypto-table');
-          document.querySelector('#total-found').innerText = data.length;
+        .then((response) => {
+          data.pagination.total = data.pagination.total + response.data.length;
+          document.querySelector('#total-found').innerText = data.pagination.total;
+          data.pagination.offset = response.offset;
 
-          table.innerHTML = '';
-          data.forEach((coin) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${coin.rank}</td>
-              <td nowrap>
-                <img 
-                  class="coin-logo"
-                  src="https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png"
-                  alt="${coin.name}"                
-                  loading="lazy">
-                <a href="https://coinmarketcap.com/currencies/${
-                  coin.id
-                }" target="_blank">${coin.name} ${coin.symbol}
-              </a>
-            </td>
-              <td nowrap>USD$ ${coin.priceUsd.toFixed(7)}</td>
-              <td style="text-align:center;">${formatter('decimal').format(
-                coin.supply.toFixed(0)
-              )}/${formatter('decimal').format(coin.maxSupply.toFixed(0))} 
-                <div>
-                  <ins>
-                (${getSupplyPercent(coin.supply, coin.maxSupply)})
-                </ins>
-              </div>
-              </td>
-              <td>${formatter().format(coin.marketCapUsd)}</td>
-              <td>${formatter().format(coin.volumeUsd24Hr)}</td>
-            `;
-            table.appendChild(row);
-            document.querySelector('#clear-filters').style.display = 'block';
-          });
+          fillTable({ coins: response.data, keepOldData: usePagination });
+
+          toggleShowMore(response.hasMore);
         })
         .catch((error) => {
           console.log(error);
-        })
-        .finally(() => {
-          document
-            .querySelector('#get-crypto')
-            .setAttribute('aria-busy', false);
         });
-    });
+    }
+
+    function fillTable({ coins, keepOldData }) {
+      const table = document.querySelector('#crypto-table');
+
+      if (keepOldData === false) {
+        table.innerHTML = '';
+      }
+
+      coins.forEach((coin) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+                  <td>${coin.rank}</td>
+                  <td nowrap>
+                    <img
+                      class="coin-logo"
+                      src="https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png"
+                      alt="${coin.name}"
+                      loading="lazy">
+                    <a href="https://coinmarketcap.com/currencies/${
+                      coin.id
+                    }" target="_blank">${coin.name} ${coin.symbol}
+                  </a>
+                </td>
+                  <td nowrap>USD$ ${coin.priceUsd.toFixed(7)}</td>
+                  <td style="text-align:center;">${formatter('decimal').format(
+                    coin.supply.toFixed(0)
+                  )}/${formatter('decimal').format(coin.maxSupply.toFixed(0))}
+                    <div>
+                      <ins>
+                    (${getSupplyPercent(coin.supply, coin.maxSupply)})
+                    </ins>
+                  </div>
+                  </td>
+                  <td>${formatter().format(coin.marketCapUsd)}</td>
+                  <td>${formatter().format(coin.volumeUsd24Hr)}</td>
+                `;
+        table.appendChild(row);
+      });
+    }
 
     function saveInputValuesOnLocalStorage() {
       localStorage.setItem(
@@ -273,6 +321,16 @@
     function getSupplyPercent(supply, totalSupply) {
       const percent = ((Number(supply) / Number(totalSupply)) * 100).toFixed(2);
       return isNaN(percent) ? '' : percent + ' %';
+    }
+
+    function toggleShowMore(value) {
+      document.querySelector('#show-more').style.display = value
+        ? 'block'
+        : 'none';
+    }
+
+    function toggleShowMoreLoading(value) {
+      document.querySelector('#show-more').setAttribute('aria-busy', value);
     }
   </script>
 </html>
