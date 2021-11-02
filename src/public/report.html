@@ -22,66 +22,72 @@
         <form action="#" id="form">
           <button type="submit" id="get-crypto">Make me rich 🤑</button>
 
-          <div>
-            <div class="row">
-              <div class="col-xs-12 col-md-4">
-                <label for="min-price">Min price</label>
-                <input type="number" id="min-price" step="any" required />
-              </div>
-              <div class="col-xs-12 col-md-4">
-                <label for="max-price">Max price</label>
-                <input type="number" id="max-price" step="any" required />
-              </div>
-              <div class="col-xs-12 col-md-4">
-                <label for="max-supply">Max supply</label>
-                <input
-                  type="number"
-                  id="max-supply"
-                  value="1000000000"
-                  required
-                />
-              </div>
-              <div class="col-xs-12">
-                <hr />
-              </div>
-              <div class="col-xs-12">
-                <h3>Network</h3>
-                <div style="display: inline-block">
+          <details>
+            <summary style="font-weight: bold;">+ Apply filters</summary>
+
+            <div>
+              <div class="row">
+                <div class="col-xs-12 col-md-4">
+                  <label for="min-price">Min price</label>
+                  <input type="number" id="min-price" step="any" required />
+                </div>
+                <div class="col-xs-12 col-md-4">
+                  <label for="max-price">Max price</label>
+                  <input type="number" id="max-price" step="any" required />
+                </div>
+                <div class="col-xs-12 col-md-4">
+                  <label for="max-supply">Max supply</label>
                   <input
-                    type="checkbox"
-                    id="binance-smart-chain"
-                    value="binance-smart-chain"
-                    checked
+                    type="number"
+                    id="max-supply"
+                    value="1000000000"
+                    required
                   />
-                  <label for="binance-smart-chain">Binance Smart Chain</label>
+                </div>
+                <div class="col-xs-12">
+                  <hr />
+                </div>
+                <div class="col-xs-12">
+                  <h3>Network</h3>
+                  <div style="display: inline-block">
+                    <input
+                      type="checkbox"
+                      id="binance-smart-chain"
+                      value="binance-smart-chain"
+                      checked
+                    />
+                    <label for="binance-smart-chain">Binance Smart Chain</label>
+                  </div>
+                </div>
+                <div class="col-xs-12">
+                  <hr />
+                </div>
+                <div class="col-xs-12">
+                  <h3>Extra filters</h3>
+                  <label for="date-addded">Date added</label>
+                  <input
+                    type="date"
+                    id="date-added"
+                    value="2019-01-01"
+                    required
+                  />
                 </div>
               </div>
-              <div class="col-xs-12">
-                <hr />
-              </div>
-              <div class="col-xs-12">
-                <h3>Extra filters</h3>
-                <label for="date-addded">Date added</label>
-                <input
-                  type="date"
-                  id="date-added"
-                  value="2019-01-01"
-                  required
-                />
-              </div>
             </div>
-          </div>
+
+            <button
+              id="clear-filters"
+              type="button"
+              style="
+                width: 200px;
+                background-color: var(--del-color);
+                border-color: var(--del-color);
+              "
+            >
+              X Clear filters
+            </button>
+          </details>
         </form>
-        <button
-          id="clear-filters"
-          style="
-            width: 200px;
-            background-color: var(--del-color);
-            border-color: var(--del-color);
-          "
-        >
-          X Clear filters
-        </button>
 
         <div>
           <h3>Total found: <span id="total-found"></span></h3>
@@ -266,10 +272,15 @@
                   <td nowrap>USD$ ${getPriceFixed(coin.quote.USD.price)}</td>
                   <td style="text-align:center;">${formatter('decimal').format(
                     coin.circulating_supply.toFixed(0)
-                  )}/${formatter('decimal').format(coin.total_supply.toFixed(0))}
+                  )}/${formatter('decimal').format(
+          coin.total_supply.toFixed(0)
+        )}
                     <div>
                       <ins>
-                    (${getSupplyPercent(coin.circulating_supply, coin.total_supply)})
+                    (${getSupplyPercent(
+                      coin.circulating_supply,
+                      coin.total_supply
+                    )})
                     </ins>
                   </div>
                   </td>
