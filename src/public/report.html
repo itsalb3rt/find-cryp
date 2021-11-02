@@ -85,19 +85,21 @@
 
         <div>
           <h3>Total found: <span id="total-found"></span></h3>
-          <table>
-            <thead>
-              <tr>
-                <th nowrap>#Rank ⇳</th>
-                <th>Name ⇳</th>
-                <th>Price ⇳</th>
-                <th style="text-align: center">Supply ⇳</th>
-                <th>Market Cap</th>
-                <th>Change (24h)</th>
-              </tr>
-            </thead>
-            <tbody id="crypto-table"></tbody>
-          </table>
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th nowrap>#Rank ⇳</th>
+                  <th>Name ⇳</th>
+                  <th>Price ⇳</th>
+                  <th style="text-align: center">Supply ⇳</th>
+                  <th>Market Cap</th>
+                  <th>Change (24h)</th>
+                </tr>
+              </thead>
+              <tbody id="crypto-table"></tbody>
+            </table>
+          </div>
           <div>
             <button style="margin: auto; display: none" id="show-more">
               Load more...
@@ -227,7 +229,8 @@
         })
         .then((response) => {
           data.pagination.total = data.pagination.total + response.data.length;
-          document.querySelector('#total-found').innerText = data.pagination.total;
+          document.querySelector('#total-found').innerText =
+            data.pagination.total;
           data.pagination.offset = response.offset;
 
           fillTable({ coins: response.data, keepOldData: usePagination });
@@ -249,30 +252,29 @@
       coins.forEach((coin) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-                  <td>${coin.rank}</td>
+                  <td>${coin.cmc_rank}</td>
                   <td nowrap>
                     <img
                       class="coin-logo"
                       src="https://static.coincap.io/assets/icons/${coin.symbol.toLowerCase()}@2x.png"
-                      alt="${coin.name}"
                       loading="lazy">
                     <a href="https://coinmarketcap.com/currencies/${
-                      coin.id
+                      coin.slug
                     }" target="_blank">${coin.name} ${coin.symbol}
                   </a>
                 </td>
-                  <td nowrap>USD$ ${coin.priceUsd.toFixed(7)}</td>
+                  <td nowrap>USD$ ${getPriceFixed(coin.quote.USD.price)}</td>
                   <td style="text-align:center;">${formatter('decimal').format(
-                    coin.supply.toFixed(0)
-                  )}/${formatter('decimal').format(coin.maxSupply.toFixed(0))}
+                    coin.circulating_supply.toFixed(0)
+                  )}/${formatter('decimal').format(coin.total_supply.toFixed(0))}
                     <div>
                       <ins>
-                    (${getSupplyPercent(coin.supply, coin.maxSupply)})
+                    (${getSupplyPercent(coin.circulating_supply, coin.total_supply)})
                     </ins>
                   </div>
                   </td>
-                  <td>${formatter().format(coin.marketCapUsd)}</td>
-                  <td>${formatter().format(coin.volumeUsd24Hr)}</td>
+                  <td>${formatter().format(coin.quote.USD.market_cap)}</td>
+                  <td>${formatter().format(coin.quote.USD.volume_24h)}</td>
                 `;
         table.appendChild(row);
       });
@@ -331,6 +333,13 @@
 
     function toggleShowMoreLoading(value) {
       document.querySelector('#show-more').setAttribute('aria-busy', value);
+    }
+
+    function getPriceFixed(price) {
+      if (price) {
+        return price.toFixed(7);
+      }
+      return price;
     }
   </script>
 </html>
