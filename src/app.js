@@ -12,14 +12,13 @@ app.get('/api/crypto', async (req, res) => {
   const minPrice = req.query.minPrice
   const maxPrice = req.query.maxPrice
   const maxSupply = req.query.maxSupply
-  const dateAdded = req.query.dateAdded
+  const dateAdded = req.query.dateAdded || '2000-01-01'
   const networks = req.query.network
   // pagination
   const limit = Number(req.query.limit) || 10
   const offset = Number(req.query.offset) || 1
 
-  let qs = `?start=${offset}&limit=${limit}&convert=USD&price_min=${minPrice}&price_max=${maxPrice}&circulating_supply_max=${maxSupply}`
-
+  let qs = `?start=${offset}&limit=${limit}&convert=USD&price_min=${minPrice || 0}&price_max=${maxPrice || 1000000}&circulating_supply_max=${maxSupply || 100000000000000000 }`
   
   try {
     let response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest' + qs, {
