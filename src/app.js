@@ -9,17 +9,17 @@ const port = 3000
 app.use(express.static(__dirname + '/public'));
 
 app.get('/api/crypto', async (req, res) => {
-  const minPrice = req.query.minPrice
-  const maxPrice = req.query.maxPrice
-  const maxSupply = req.query.maxSupply
-  const dateAdded = req.query.dateAdded || '2000-01-01'
+  const minPrice = req.query.minPrice || 0
+  const maxPrice = req.query.maxPrice || 1000000
+  const maxSupply = req.query.maxSupply || 100000000000000000
+  const dateAdded = req.query.dateAdded
   const networks = req.query.network
   // pagination
   const limit = Number(req.query.limit) || 10
   const offset = Number(req.query.offset) || 1
 
-  let qs = `?start=${offset}&limit=${limit}&convert=USD&price_min=${minPrice || 0}&price_max=${maxPrice || 1000000}&circulating_supply_max=${maxSupply || 100000000000000000 }`
-  
+  let qs = `?start=${offset}&limit=${limit}&convert=USD&price_min=${minPrice}&price_max=${maxPrice}&circulating_supply_max=${maxSupply}`
+
   try {
     let response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest' + qs, {
       headers: {
@@ -41,11 +41,12 @@ app.get('/api/crypto', async (req, res) => {
 
     if (networks) {
       // filter response tags.includes include any networks
-      response.data.data = response.data.data.filter(coin => coin.tags.includes(networks))
+      coins = coins.filter(coin => coin.tags.includes(networks))
     }
 
     if (dateAdded) {
-      response.data.data = response.data.data.filter(coin => coin.date_added > dateAdded)
+      const compareTime = new Date(dateAdded).getTime()
+      coins = coins.filter(coin => compareTime <= new Date(coin.date_added).getTime())
     }
 
     res.json({
@@ -53,7 +54,7 @@ app.get('/api/crypto', async (req, res) => {
       hasMore: coins.length === limit,
       offset: offset === 0 ? limit + 1 : limit + offset
     })
-    
+
   } catch (error) {
     console.log(error);
   }
