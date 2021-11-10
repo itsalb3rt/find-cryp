@@ -87,7 +87,7 @@
                 <tr>
                   <th nowrap>#Rank ⇳</th>
                   <th>Name ⇳</th>
-                  <th>Price ⇳</th>
+                  <th nowrap>USD Price ⇳</th>
                   <th>Date ⇳</th>
                   <th style="text-align: center">Supply ⇳</th>
                   <th>Market Cap</th>
@@ -266,7 +266,7 @@
                     }" target="_blank">${coin.name} ${coin.symbol}
                   </a>
                 </td>
-                  <td nowrap>USD$ ${getPriceFixed(coin.quote.USD.price)}</td>
+                  <td nowrap>${getPriceFixed(coin.quote.USD.price)}</td>
                   <td nowrap>${formatDate(coin.date_added)}</td>
                   <td style="text-align:center;">${formatter('decimal').format(
                     coin.circulating_supply.toFixed(0)
@@ -340,7 +340,7 @@
 
     function getPriceFixed(price) {
       if (price) {
-        return price.toFixed(7);
+        return formatter().format(price.toFixed(7));
       }
       return price;
     }
