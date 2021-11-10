@@ -46,8 +46,11 @@ $ npm start
 
 ## Resources
 
+All is free!
+
 - Source data [CoinMarketCap](https://coinmarketcap.com/api/)
 - Crypto icons [Coincap](https://coincap.io/)
+- Hosted in [Heroku](heroku.com/apps)
 
 ---
 <center>
