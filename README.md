@@ -1,13 +1,13 @@
-# Make Me Rich 🤑
+# FindCryp
 
-Is a 4 hours project to check the newest currencies with zero effort.
+Easy way to find crypto, my principal focus is **Binance Smart Chain**
 
 ![image](https://user-images.githubusercontent.com/35310226/139607713-2bea5e6a-cb87-49ec-8d1a-5b9178c5d6c6.png)
 
 ![image](https://user-images.githubusercontent.com/35310226/139607725-0ece546c-daeb-4fc6-b5c8-6bda7e57b62c.png)
 
 
-You can filter:
+**You can filter:**
 - Min price
 - Max price
 - Max supply
@@ -39,6 +39,11 @@ $ npm install
 ```bash
 $ npm start
 ```
+
+## Resources
+
+- Source data [CoinMarketCap](https://coinmarketcap.com/api/)
+- Crypto icons [Coincap](https://coincap.io/)
 
 ---
 <center>
