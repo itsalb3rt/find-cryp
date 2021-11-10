@@ -66,5 +66,5 @@ app.get('/report', (req, res) => {
 });
 
 app.listen(process.env.PORT || port, () => {
-  console.log(`Example app listening at http://localhost:${process.env.PORT || port}`)
+  console.log(`Example app listening at http://localhost:${process.env.PORT || port}/report`)
 })
