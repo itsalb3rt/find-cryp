@@ -2,10 +2,14 @@
 
 Easy way to find crypto, my principal focus is **Binance Smart Chain**
 
-![image](https://user-images.githubusercontent.com/35310226/139607713-2bea5e6a-cb87-49ec-8d1a-5b9178c5d6c6.png)
+---
 
-![image](https://user-images.githubusercontent.com/35310226/139607725-0ece546c-daeb-4fc6-b5c8-6bda7e57b62c.png)
+<div style="display: flex;justify-content: center;">
+  <img width="300" src="https://user-images.githubusercontent.com/35310226/141026712-5fa2b29c-b298-4329-9cad-181ae027a67c.png" alt="demo-image-1" />
+  <img width="300" src="https://user-images.githubusercontent.com/35310226/141026732-1359c60b-0e50-46b1-9418-004e560633cd.png" alt="demo-image-2" />
+</div>
 
+---
 
 **You can filter:**
 - Min price
